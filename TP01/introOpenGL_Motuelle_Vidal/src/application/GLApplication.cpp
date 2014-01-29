@@ -12,6 +12,14 @@ GLApplication::GLApplication() {
     //initStrip(200,-0.8,0.8,-0.8,0.8);
     initRing(20,0.2,0.6);
 
+
+      _triangleTexCoord = {
+        1,1,
+        1,0,
+        0,1,
+        0,0
+      };
+
 }
 
 void GLApplication::initStrip(int nbSlice,float xmin,float xmax,float ymin,float ymax){
@@ -66,7 +74,7 @@ void GLApplication::initialize() {
   glLineWidth(2.0);
   glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
-
+  _coeff = 1;
   _shader0=initProgram("simple");
 
 
@@ -85,12 +93,20 @@ void GLApplication::resize(int width,int height) {
   // ...
 }
 
+int phase=0; //0 pour incrementation 1 pour decrementation
 void GLApplication::update() {
   // appelée toutes les 20ms (60Hz)
   // => mettre à jour les données de l'application
   // avant l'affichage de la prochaine image (animation)
   // ...
-
+    if(phase==0){
+        _coeff += 0.03;
+        if(_coeff>=1)phase=1;
+    }
+    else {
+        _coeff -= 0.03;
+        if(_coeff<=0)phase=0;
+    }
 
 }
 
@@ -100,8 +116,16 @@ void GLApplication::draw() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   glUseProgram(_shader0);
-  glBindVertexArray(_triangleVAO);
 
+
+ /*glUniform1f(glGetUniformLocation(_shader0,"coeff"),1);//modif 1 par coeff pour anim
+  glDrawArrays(GL_TRIANGLE_STRIP,0,_trianglePosition.size()/3);*/
+
+
+  glActiveTexture(GL_TEXTURE0); // on travaille avec l'unité de texture 0
+  glBindTexture(GL_TEXTURE_2D,_textureId); // l'unité de texture 0 correspond à la texture _textureId (image lagoon.jpg).
+  glUniform1f(glGetUniformLocation(_shader0,"texture"),0); // on affecte la valeur du sampler2D du fragment shader : c'est l'unité 0.
+  glBindVertexArray(_triangleVAO);
   glDrawArrays(GL_TRIANGLE_STRIP,0,_trianglePosition.size()/3);
 
   glBindVertexArray(0);
@@ -181,13 +205,18 @@ void GLApplication::initTriangleBuffer() {
   glBindBuffer(GL_ARRAY_BUFFER,_trianglePositionBuffer);
   glBufferData(GL_ARRAY_BUFFER,_trianglePosition.size()*sizeof(float),_trianglePosition.data(),GL_STATIC_DRAW);
 
-  glGenBuffers(1,&_triangleColorBuffer);
+  /*glGenBuffers(1,&_triangleColorBuffer);
   glBindBuffer(GL_ARRAY_BUFFER,_triangleColorBuffer);
-  glBufferData(GL_ARRAY_BUFFER,_triangleColor.size()*sizeof(float),_triangleColor.data(),GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER,_triangleColor.size()*sizeof(float),_triangleColor.data(),GL_STATIC_DRAW);*/
 
-  glGenBuffers(1,&_elementBuffer);
+  /*glGenBuffers(1,&_elementBuffer);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_elementBuffer);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER,_elementData.size()*sizeof(unsigned int),_elementData.data(),GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,_elementData.size()*sizeof(unsigned int),_elementData.data(),GL_STATIC_DRAW);*/
+
+  glGenBuffers(1,&_triangleTexCoordBuffer);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_triangleTexCoordBuffer);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,_triangleTexCoord.size()*sizeof(unsigned int),_triangleTexCoord.data(),GL_STATIC_DRAW);
+
 
 }
 
@@ -199,10 +228,10 @@ void GLApplication::initTriangleVAO() {
   glBindBuffer(GL_ARRAY_BUFFER,_trianglePositionBuffer);
   glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,0);
 
-  glBindBuffer(GL_ARRAY_BUFFER,_triangleColorBuffer);
-  glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,0);
+  glBindBuffer(GL_ARRAY_BUFFER,_triangleTexCoordBuffer);
+  glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,0);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBuffer);
+  /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBuffer);*/
 
 
   glEnableVertexAttribArray(0);

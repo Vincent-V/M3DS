@@ -46,6 +46,8 @@ private:
   GLuint _textureId;
   GLuint _elementBuffer;
 
+  float _coeff;
+
 
 
 };

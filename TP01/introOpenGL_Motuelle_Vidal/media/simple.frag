@@ -1,9 +1,10 @@
 #version 130
 
-in vec4 fColor;
+uniform sampler2D texture;
+in vec2 fTexCoord;
 
 out vec4 fragColor;
         
 void main() {
-    fragColor=fColor;
+    fragColor=texture2D(texture,fTexCoord);
 }
