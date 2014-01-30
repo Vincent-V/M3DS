@@ -10,15 +10,7 @@ GLApplication::~GLApplication() {
 GLApplication::GLApplication() {
 
     //initStrip(200,-0.8,0.8,-0.8,0.8);
-    initRing(20,0.2,0.6);
-
-
-      _triangleTexCoord = {
-        1,1,
-        1,0,
-        0,1,
-        0,0
-      };
+    initRing(100,0.2,0.6);
 
 }
 
@@ -45,17 +37,19 @@ void GLApplication::initRing(int nbSlice,float r0,float r1){
    float theta_max = 2 * 3.14159;
    float interv_theta = theta_max / nbSlice ;
    float theta_courant = 0;
-   float intervColor = 1 / (float)nbSlice ;
+   float intervTex = 1 / (float)nbSlice ;
 
    for(int i=0;i<=nbSlice;++i) {
        _trianglePosition.push_back(r0 * cos(theta_courant));
        _trianglePosition.push_back(r0 * sin(theta_courant));
        _trianglePosition.push_back(0.0);
-       _triangleColor.push_back(0);_triangleColor.push_back(intervColor*i);_triangleColor.push_back(0);_triangleColor.push_back(1);
+       _triangleTexCoord.push_back(i*intervTex);_triangleTexCoord.push_back(0);
        _trianglePosition.push_back(r1 * cos(theta_courant));
        _trianglePosition.push_back(r1 * sin(theta_courant));
        _trianglePosition.push_back(0.0);
-       _triangleColor.push_back(0);_triangleColor.push_back(0);_triangleColor.push_back(1-(intervColor*i));_triangleColor.push_back(1);
+       _triangleTexCoord.push_back(i*intervTex);_triangleTexCoord.push_back(1);
+
+       //cout << r1 * cos(theta_courant) << ";" << r1 * sin(theta_courant) << endl;
        theta_courant += interv_theta ;
    }
 
