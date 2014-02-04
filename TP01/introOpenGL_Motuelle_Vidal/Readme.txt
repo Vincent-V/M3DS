@@ -1,10 +1,8 @@
-Motuelle Romain
-Vidal Vincent
+Binome : Motuelle Romain & Vidal Vincent
 
-Doit contenir :
-- ce que vous avez fait.
-- ce que vous n'avez pas fait (et pourquoi).
-- difficultés rencontrées.
-- commentaires éventuels sur le TP (points à éclaircir, longueur du sujet, etc). 
+Achevement : 
+- Nous avons répondu avec succès aux 24 premières questions. (Voir fichiers)
+- Nous n'avons pas eu le temps de finir les 2 dernières questions. Car nous avons mis beaucoup plus de temps que prévu à installer Qt sur nos propres machines. (Ubuntu 12.04)
 
-Question 10 : Les couleurs ne sont plus liées aux mêmes sommets. En effet on a changé le tableau d'indice ainsi que le tableau contenant les coordonnées des sommets. Or le tableau contenant les couleurs n'a pas été changé, l'ordre change donc.
+Difficultés rencontrées :
+- Nous n'avons pas rencontré de difficultés particulières, le tout était bien expliqué et reprenait en grande partie ce qui avait été vu en cours.
