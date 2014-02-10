@@ -69,9 +69,12 @@ void BasicMesh::initTetrahedron() {
   _attribute.clear();
   for(unsigned int i=0;i<position.size()/3;++i) {
 
-    _attribute.push_back(position[i*3+0]*0.09); // *0.09 pour être visible entre [-0.9,0.9]
+   /* _attribute.push_back(position[i*3+0]*0.09); // *0.09 pour être visible entre [-0.9,0.9]
     _attribute.push_back(position[i*3+1]*0.09);
-    _attribute.push_back(position[i*3+2]*0.09+1.0);
+    _attribute.push_back(position[i*3+2]*0.09+1.0);*/
+      _attribute.push_back(position[i*3+0]);
+      _attribute.push_back(position[i*3+1]);
+      _attribute.push_back(position[i*3+2]);
 
 
 
@@ -92,9 +95,13 @@ void BasicMesh::initObj(const ObjLoader &obj) {
   // - obj.position(i) = position du i-ème sommet de type Vector3 => obj.position(i).x() donne le x, .y() donne le y, etc
   // - obj.normal(i) = normale du i-ème sommet de type Vector3
   for(unsigned int i=0;i<obj.nbVertex();++i) {
+    _attribute.push_back(obj.position(i).x());
+    _attribute.push_back(obj.position(i).y());
+    _attribute.push_back(obj.position(i).z());
 
-    // TODO
-
+     _attribute.push_back(obj.normal(i).x());
+    _attribute.push_back(obj.normal(i).y());
+    _attribute.push_back(obj.normal(i).z());
   }
 
   // initialisation de _element (i.e. indices des triangles pour glDrawElements) :
@@ -102,8 +109,9 @@ void BasicMesh::initObj(const ObjLoader &obj) {
   // - obj.indexVertex(i,j) = donne l'indice du j-ième sommet (j=0,1 ou 2) du i-ème triangle
   for(unsigned int i=0;i<obj.nbFace();i++) {
 
-    // TODO
-
+    _element.push_back(obj.indexVertex(i,0));
+    _element.push_back(obj.indexVertex(i,1));
+    _element.push_back(obj.indexVertex(i,2));
   }
 }
 

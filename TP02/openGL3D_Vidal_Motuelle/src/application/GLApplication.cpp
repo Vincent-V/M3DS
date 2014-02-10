@@ -10,13 +10,15 @@ GLApplication::~GLApplication() {
 
 GLApplication::GLApplication() {
 
-  _lightPosition.set(0,0,0);
+  _lightPosition.set(-20,0,-30);
 
-  _meshGL.initTetrahedron();
+  _obj.readInit("cow.obj",Vector3(-10,-10,-20),Vector3(10,10,-10)); // reporte l'objet dans la boite d'extémités (-10,-10,-20) et (10,10,-10)
+  _meshGL.initObj(_obj); // initialisation des sommets du tétrahèdre substitué avec l'initialisation de _obj
 
   _angle=0.0;
 
-
+  // _projection de classe Matrix4 déclarée dans GLApplication.h
+  _projection.setOrtho(-20,20,-20,20,5,100); // cf calcul de la matrice dans le cours
 
 
 
@@ -37,7 +39,7 @@ void GLApplication::initialize() {
 
 
   _shader.attribute("position",0);
-  _shader.attribute("color",1);
+  _shader.attribute("normal",1);
   _shader.read("openGL3D");
 
   glEnable(GL_DEPTH_TEST); // chaque fragment source subit le test du depth buffer
@@ -63,6 +65,7 @@ void GLApplication::update() {
   // ...
 
   _angle+=2;
+  // _angle=0.0;
 
 
   _transform.setTranslation(0,0,-15);
@@ -79,9 +82,14 @@ void GLApplication::draw() {
 
 
   glUseProgram(_shader.id());
-
+  _shader.uniform("projection",_projection); // utilisation de la classe shader
+  _shader.uniform("transform",_transform);
+  _shader.uniform("lightPosition",_lightPosition);
+  _shader.uniform("diffuseColor",Vector3(0.2,0.8,0.2));
   _meshGL.draw();
   glUseProgram(0);
+
+
 
   snapshot(); // capture opengl window if requested
 }
