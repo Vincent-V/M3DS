@@ -12,7 +12,7 @@ uniform vec3 diffuseColor;
 
 void main() {
       vec3 N = normal;
-      vec3 L = position - lightPosition;
+      vec3 L =  lightPosition - position ;
       N = normalize(N);
       L = normalize(L);
       float intensity = max(dot(N,L),0.0);

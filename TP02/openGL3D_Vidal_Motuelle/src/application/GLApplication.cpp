@@ -10,7 +10,7 @@ GLApplication::~GLApplication() {
 
 GLApplication::GLApplication() {
 
-  _lightPosition.set(-20,0,-30);
+  _lightPosition.set(0,0,0);
 
   _obj.readInit("cow.obj",Vector3(-10,-10,-20),Vector3(10,10,-10)); // reporte l'objet dans la boite d'extémités (-10,-10,-20) et (10,10,-10)
   _meshGL.initObj(_obj); // initialisation des sommets du tétrahèdre substitué avec l'initialisation de _obj
