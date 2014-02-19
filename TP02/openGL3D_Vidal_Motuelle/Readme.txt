@@ -1,11 +1,11 @@
+Binome :
 Vidal Vincent
 Motuelle Romain
 
-Doit contenir :
-- ce que vous avez fait.
-- ce que vous n'avez pas fait (et pourquoi).
-- difficultés rencontrées.
-- commentaires éventuels sur le TP (points à éclaircir, longueur du sujet, etc). 
+Avancement :
+
+Le TP a été réalisé entièrement de la question 1 à la question 23.
+La question bonus n'a pas été faite, nous n'y sommes pas parvenu.
 
 Explications :
 
