@@ -23,54 +23,101 @@ Car::Car() {
 // ******************************************************************
 // méthodes à compléter lors du TP
 void Car::drawRim() {
+
     p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.scale(0.2,0.2,4);
     drawCylinder();
-    p3d::modelviewMatrix.scale(5,5,0.25);
-    p3d::modelviewMatrix.rotate(90,1,0,0);
-    p3d::modelviewMatrix.translate(0,2,-2);
-    p3d::modelviewMatrix.scale(0.2,0.2,4);
-    drawCylinder();
-    p3d::modelviewMatrix.scale(5,5,0.25);
+    p3d::modelviewMatrix.pop();
+
+    p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.rotate(45,1,0,0);
     p3d::modelviewMatrix.translate(0,1.4,-0.5);
     p3d::modelviewMatrix.scale(0.2,0.2,4);
     drawCylinder();
-    p3d::modelviewMatrix.scale(5,5,0.25);
+    p3d::modelviewMatrix.pop();
+
+    p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.rotate(90,1,0,0);
-    p3d::modelviewMatrix.translate(0,0,-2);
+    p3d::modelviewMatrix.translate(0,2,-2);
     p3d::modelviewMatrix.scale(0.2,0.2,4);
     drawCylinder();
+    p3d::modelviewMatrix.pop();
 
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(135,1,0,0);
+    p3d::modelviewMatrix.translate(0,1.4,-3.5);
+    p3d::modelviewMatrix.scale(0.2,0.2,4);
+    drawCylinder();
     p3d::modelviewMatrix.pop();
 }
 
 void Car::drawWheel() {
 
+    p3d::diffuseColor=Vector3(0.5,0.5,0.5);
+    drawRim();
+
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(90,0,1,0);
+    p3d::modelviewMatrix.translate(-2,0,0);
+    p3d::modelviewMatrix.scale(2.5,2.5,1.5);
+    p3d::diffuseColor=Vector3(0,0,0);
+    drawTorus();
+    p3d::modelviewMatrix.pop();
 }
 
 void Car::drawAxle() {
-
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(90,0,1,0);
+    p3d::modelviewMatrix.scale(0.2,0.2,6);
+    p3d::diffuseColor=Vector3(0,0,0);
+    drawCylinder();
+    p3d::modelviewMatrix.pop();
 }
 
 void Car::drawBody() {
     p3d::modelviewMatrix.push();
-    p3d::modelviewMatrix.scale(3,1,1);
+    p3d::modelviewMatrix.translate(0,1.5,1.8);
+    p3d::modelviewMatrix.scale(2,2,6);
+    p3d::diffuseColor=Vector3(1,1,0);
     drawCube();
-    p3d::modelviewMatrix.translate(0.6,2,0);
-    p3d::modelviewMatrix.scale(0.4,1,1);
+    p3d::modelviewMatrix.pop();
+
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,5.5,-2.2);
+    p3d::modelviewMatrix.scale(2,2,2);
+    p3d::diffuseColor=Vector3(1,1,0);
     drawCube();
     p3d::modelviewMatrix.pop();
 }
 
+void Car::drawWA(){
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(3,0,0);
+    drawWheel();
+    p3d::modelviewMatrix.pop();
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(-3,0,0);
+    drawWheel();
+    p3d::modelviewMatrix.pop();
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(-3,0,2);
+    drawAxle();
+    p3d::modelviewMatrix.pop();
+}
+
 void Car::draw() {
-  p3d::modelviewMatrix.push();
 
+    p3d::modelviewMatrix.scale(0.8,0.8,0.8);
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,0,-4);
+    drawWA();
+    p3d::modelviewMatrix.pop();
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,0,4);
+    drawWA();
+    p3d::modelviewMatrix.pop();
+    drawBody();
 
-  drawRim();
-
-
-  p3d::modelviewMatrix.pop();
 }
 
 

@@ -33,6 +33,7 @@ public:
   void drawRim();
   void drawWheel();
   void drawAxle();
+  void drawWA();
   void drawBody();
 
   void rotateWheel(double angle) {_rotateWheel+=angle;}
