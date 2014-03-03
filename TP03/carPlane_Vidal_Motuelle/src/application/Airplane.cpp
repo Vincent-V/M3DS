@@ -43,9 +43,10 @@ void Airplane::drawWorld() {
   p3d::modelviewMatrix.push();
   p3d::modelviewMatrix.translate(_position);
 
-  p3d::modelviewMatrix.rotate(_angleY,0,1,0); // yaw
+ /* p3d::modelviewMatrix.rotate(_angleY,0,1,0); // yaw
   p3d::modelviewMatrix.rotate(_angleX,1,0,0); // pitch
-  p3d::modelviewMatrix.rotate(_angleZ,0,0,1); // roll
+  p3d::modelviewMatrix.rotate(_angleZ,0,0,1); // roll*/
+  p3d::modelviewMatrix.rotate(_orientation);
 
 
   p3d::modelviewMatrix.scale(2,2,2); // grossir un peu l'avion
@@ -55,40 +56,46 @@ void Airplane::drawWorld() {
 }
 
 void Airplane::move() {
-
+    p3d::modelviewMatrix.translate(_velocity*10,0,0);
 }
 
 void Airplane::pitchDown() {
-  _angleX+=_increment;
+    _orientation.rotate(_increment,Vector3(1,0,0)); // rotation autour de x, mais cette fois, à partir de l'orientation courante
+ // _angleX+=_increment;
 
 
 }
 
 void Airplane::pitchUp() {
-  _angleX-=_increment;
+    _orientation.rotate(_increment,Vector3(-1,0,0));
+  //_angleX-=_increment;
 
 
 }
 
 void Airplane::rollRight() {
-  _angleZ+=_increment;
+    _orientation.rotate(_increment,Vector3(0,0,1));
+  //_angleZ+=_increment;
 
 
 }
 
 void Airplane::rollLeft() {
-  _angleZ-=_increment;
+    _orientation.rotate(_increment,Vector3(0,0,-1));
+  //_angleZ-=_increment;
 
 }
 
 void Airplane::yawLeft() {
-  _angleY+=_increment;
+    _orientation.rotate(_increment,Vector3(0,1,0));
+  //_angleY+=_increment;
 
 
 }
 
 void Airplane::yawRight() {
-  _angleY-=_increment;
+    _orientation.rotate(_increment,Vector3(0,-1,0));
+  //_angleY-=_increment;
 
 }
 

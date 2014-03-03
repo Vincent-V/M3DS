@@ -52,6 +52,8 @@ void Car::drawRim() {
 }
 
 void Car::drawWheel() {
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,0,-2);
 
     p3d::diffuseColor=Vector3(0.5,0.5,0.5);
     drawRim();
@@ -63,18 +65,29 @@ void Car::drawWheel() {
     p3d::diffuseColor=Vector3(0,0,0);
     drawTorus();
     p3d::modelviewMatrix.pop();
+
+
+    p3d::modelviewMatrix.pop();
 }
 
 void Car::drawAxle() {
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,0,-2);
+
     p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.rotate(90,0,1,0);
     p3d::modelviewMatrix.scale(0.2,0.2,6);
     p3d::diffuseColor=Vector3(0,0,0);
     drawCylinder();
     p3d::modelviewMatrix.pop();
+
+    p3d::modelviewMatrix.pop();
 }
 
 void Car::drawBody() {
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.translate(0,0,-2);
+
     p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.translate(0,1.5,1.8);
     p3d::modelviewMatrix.scale(2,2,6);
@@ -88,20 +101,35 @@ void Car::drawBody() {
     p3d::diffuseColor=Vector3(1,1,0);
     drawCube();
     p3d::modelviewMatrix.pop();
+    p3d::modelviewMatrix.pop();
 }
 
 void Car::drawWA(){
     p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(_steering, 0, 1,0);
+
+
+    p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.translate(3,0,0);
+
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(_rotateWheel, 1, 0,0);
     drawWheel();
+    p3d::modelviewMatrix.pop();
+
     p3d::modelviewMatrix.pop();
     p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.translate(-3,0,0);
+    p3d::modelviewMatrix.push();
+    p3d::modelviewMatrix.rotate(_rotateWheel, 1, 0,0);
     drawWheel();
+    p3d::modelviewMatrix.pop();
     p3d::modelviewMatrix.pop();
     p3d::modelviewMatrix.push();
     p3d::modelviewMatrix.translate(-3,0,2);
+
     drawAxle();
+    p3d::modelviewMatrix.pop();
     p3d::modelviewMatrix.pop();
 }
 
@@ -122,7 +150,6 @@ void Car::draw() {
 
 
 void Car::drawWorld() {
-
   p3d::modelviewMatrix.push();
 
   draw(); // tracé de la voiture dans son repère local
