@@ -152,6 +152,8 @@ void Car::draw() {
 void Car::drawWorld() {
   p3d::modelviewMatrix.push();
 
+  modelviewMatrix.translate(_position);
+  modelviewMatrix.rotate(_orientation);
   draw(); // tracé de la voiture dans son repère local
   p3d::modelviewMatrix.pop();
 }
@@ -163,6 +165,7 @@ void Car::move() {
   _steering-=_steering/10*fabs(_velocity);
 
   _orientation.rotate(_steering*_velocity/(1.0+fabs(_velocity)),Vector3(0,1,0)); // le /100 est déterminé par essai/erreur
+  _position.add(_orientation*Vector3(0,0,1)*_velocity*0.2);
 
 }
 

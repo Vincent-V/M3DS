@@ -56,7 +56,7 @@ void Airplane::drawWorld() {
 }
 
 void Airplane::move() {
-    p3d::modelviewMatrix.translate(_velocity*10,0,0);
+    _position.add(_orientation*Vector3(0,0,1)*_velocity*0.2);
 }
 
 void Airplane::pitchDown() {
