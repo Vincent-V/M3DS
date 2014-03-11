@@ -34,11 +34,50 @@ void WVertex::computeNormal() {
   Vector3 average(0,0,0); // à calculer
 
   // TODO : compléter
+  WEdge *e_tmp;
+  int cpt = 0;
 
+  e_tmp=this->edge();
+  do{
+      if(e_tmp->begin()==this){
+          if(e_tmp->predLeft()!=NULL){
+              average += e_tmp->left()->normal();
+              e_tmp=e_tmp->predLeft();
+              cpt++;
+          }
+          else { //si un boundary est détecté
+               WEdge *bord = e_tmp;
+               do{
+                   if(e_tmp->begin()==this)
+                       e_tmp=e_tmp->succRight();
+                   else
+                       e_tmp=e_tmp->succLeft();
+               }while(bord!=e_tmp && e_tmp->succRight() && e_tmp->succLeft());
+          }
+      }
+      else {
+          if(e_tmp->predRight()!=NULL){
+              average += e_tmp->right()->normal();
+              e_tmp=e_tmp->predRight();
+              cpt++;
+          }
+          else { //si un boundary est détecté
+              WEdge *bord = e_tmp;
+              do{
+                  if(e_tmp->begin()==this)
+                      e_tmp=e_tmp->succRight();
+                  else
+                      e_tmp=e_tmp->succLeft();
+              }while(bord!=e_tmp && e_tmp->succRight() && e_tmp->succLeft());
+          }
+      }
+
+  }while(e_tmp != this->edge());
+  average = average / cpt;
 
 
   // A LAISSER à la fin
-  // average.normalize();
+  average.normalize();
   this->normal(average);
 }
 

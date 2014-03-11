@@ -159,8 +159,8 @@ void GLApplication::draw() {
 /** ********************************************************************** **/
 /** i = button number, s = button text
  */
-void GLApplication::leftPanel(int i,const std::string &s) {
-//  cout << "GLApplication : button clicked " << i << " " << s << endl;
+void GLApplication::leftPanel(int i,const std::string &s){
+  cout << "GLApplication : button clicked " << i << " " << s << endl;
 
   switch (i) {
     case 0:case 1:

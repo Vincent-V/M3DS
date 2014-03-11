@@ -30,7 +30,7 @@ public:
   virtual void resize(int width,int height);
   /** ***** **/
 
-  virtual void leftPanel(int i, const std::string &s);
+  virtual void leftPanel(int i,const std::string &s);
   QSize sizeHint() const {return QSize(500,500);}
 
 private:

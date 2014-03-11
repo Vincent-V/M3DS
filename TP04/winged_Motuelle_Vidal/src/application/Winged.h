@@ -71,7 +71,7 @@ class Winged
     void drawPointEdge();
     void drawPointVertex();
     void drawWire(const p3d::Vector4 &color);
-    void drawEdgeBound(const p3d::Vector4 &color);
+    void drawEdgeBound();
     void drawLineCatmull();
     void drawNormal();
 

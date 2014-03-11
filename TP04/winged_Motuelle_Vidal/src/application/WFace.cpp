@@ -26,8 +26,8 @@ using namespace std;
 ** *********************************************************************************** */
 
 void WFace::draw(bool withNormal) {
-  WEdge *e, *e_new, *start;
-  WVertex *v;
+  WEdge *e/*, *e_new*/, *start;
+  /*WVertex *v;*/
   e=start=this->edge();
 
   vector<Vector3> position;
@@ -36,9 +36,18 @@ void WFace::draw(bool withNormal) {
   vector<Vector3> normal;
   normal.clear();
 
-  // TODO : compléter
-
-
+  do{
+      if(e->right()==this){
+          position.push_back(e->begin()->position());
+          normal.push_back(e->begin()->normal());
+          e=e->succRight();
+      }
+      else if(e->left()==this){
+          position.push_back(e->end()->position());
+          normal.push_back(e->end()->normal());
+          e=e->succLeft();
+      }
+  }while(e != start);
 
   // A Laisser à la fin (affichage polygone par polygone : lent)
   if (withNormal)

@@ -365,7 +365,7 @@ void Winged::drawNormal() {
     p3d::drawLines(lines);
 }
 
-void Winged::drawEdgeBound(const Vector4 &c) {
+void Winged::drawEdgeBound(/*const Vector4 &c*/) {
 
 }
 
