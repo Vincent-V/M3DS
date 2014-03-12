@@ -24,6 +24,11 @@ Vector3 Curve::evalBezier(double t) {
 
         // A COMPLETER : appliquer la méthode de De Casteljau
 
+        for (int i = 1; i < castel.size(); i++) {
+             for (int j = 0; j < castel.size()-i; j++) {
+                castel[j] = ((1-t)*castel[j]) + (t*castel[j+1]) ;
+             }
+        }
 
         // le point de la courbe doit se trouver dans castel[0] à la fin de l'algo
         result=castel[0];

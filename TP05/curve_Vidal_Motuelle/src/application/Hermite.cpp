@@ -21,14 +21,18 @@ using namespace std;
 Vector3 Hermite::eval(double t) {
   // initialiser la matrice 4x4 avec les valeurs correctes pour une courbe de Hermite (cf cours)
 
-  double matrix[16]={1.0,0.0,0.0,0.0,
-                     0.0,1.0,0.0,0.0,
+  double matrix[16]={2.0,-2.0,1.0,1.0,
+                     -3.0,3.0,-2.0,-1.0,
                      0.0,0.0,1.0,0.0,
-                     0.0,0.0,0.0,1.0};
+                     1.0,0.0,0.0,0.0};
 
   Vector3 res(0,0,0);
   // A COMPLETER : calculer le point P(t) :
-
+  double res_tmp[4];
+  for(int i=0;i<4;i++){
+      res_tmp[i] = pow(t,3)*matrix[i] + pow(t,2)*matrix[4+i] + t*matrix[8+i] + matrix[12+i];
+  }
+  res = res_tmp[0]*_a + res_tmp[1]*_b + res_tmp[2]*_ta + res_tmp[3]*_tb;
 
 
   return res;
@@ -39,10 +43,16 @@ Vector3 Hermite::eval(double t) {
 **/
 void Hermite::draw() {
     vector<Vector3> lPoints;
+    Vector3 current;
 
     // A COMPLETER : calculer 100 points pour décrire la courbe de hermite
     // Il faut faire des lPoints.push_back avec les points calculés (lPoints déjà tracé à la fin de la méthode en GL_LINE_STRIP).
 
+    lPoints.push_back(_a); //ajout de l'origine
+    for(int i=0;i<100;i++){
+        current = eval((1.0/100)*(i+1)); //décalage
+        lPoints.push_back(current);
+    }
 
     p3d::drawThickLineStrip(lPoints);
 
