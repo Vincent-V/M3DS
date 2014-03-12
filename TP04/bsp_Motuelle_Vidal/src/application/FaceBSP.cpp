@@ -54,6 +54,9 @@ Vector3 FaceBSP::intersection(const Vector3 &p1,const Vector3 &p2) const {
   // TODO : A COMPLETER
   Vector3 p1p2(p1,p2);
   double div = p1p2.dot(_normal);
+  //detecte si p1p2 "presque" parallèle au plan avec valeur absolue < 0.01
+  //dans ce cas on retourne le point au milieu de p1 p2
+  if (fabs(div) < 0.01 ) return Vector3((p1.x()+p2.x())/2,(p1.y()+p2.y())/2,(p1.z()+p2.z())/2);
   double k = (point(0).dot(_normal)-p1.dot(_normal))/div;
   res = p1 + (k*p1p2);
 
@@ -79,7 +82,33 @@ void FaceBSP::separe(const FaceBSP &f) {
   vertexPositive.clear();
 
 // TODO : à compléter
-  for(int i=0;i<_tabVertex.size();i++){
+  int size = _tabVertex.size();
+  int last_index = size -1;
+  Vector3 last_point = this->point(last_index);
+  ESign last_sign = f.sign(last_point);
+
+  for(int i=0;i<size;i++){
+    Vector3 current_point = this->point(i);
+    ESign current_sign = f.sign(current_point);
+
+    if(current_sign != last_sign){ //Si les signes ont changé c'est qu'il y a une intersection
+        Vector3 intersection = f.intersection(current_point, last_point);
+        VertexBSP *intersect = createVertex(intersection); //creation d'un nouveau sommet à l'intersection
+        intersect->interpolateNormal(*_tabVertex[i],*_tabVertex[last_index]); //calcul de la normal au nouveau sommet
+        //dans ce cas le sommet est à la fois dans Negative et dans positive
+        vertexNegative.push_back(intersect);
+        vertexPositive.push_back(intersect);
+    }
+
+    last_point = current_point;
+    last_sign = current_sign;
+    last_index = i;
+
+    if (current_sign == SIGN_MINUS) {
+        vertexNegative.push_back(_tabVertex[i]);
+    } else {
+        vertexPositive.push_back(_tabVertex[i]);
+    }
 
   }
 
