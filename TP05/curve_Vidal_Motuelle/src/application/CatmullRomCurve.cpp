@@ -29,9 +29,16 @@ void CatmullRomCurve::draw() {
   Vector3 p1,p2;
 
   if (nbPoint()<2) return; // tracé uniquement si plus de 2 points saisis.
+  int size = nbPoint();
 
-
-
+  if (size<2) return; // on déclenche le calcul uniquement si plus de 2 points saisis.
+  for (int i = 0; i<size-1; i++) {
+      cubic.point(0,point(i));
+      cubic.point(1,intermediate(i,0));
+      cubic.point(2,intermediate(i,1));
+      cubic.point(3,point(i+1));
+      cubic.drawBezier();
+  }
 }
 
 /**
@@ -42,6 +49,13 @@ void CatmullRomCurve::setup() {
 
   // A COMPLETER : il s'agit d'initialiser les points intermédiaires (les points verts) en appelant les setters intermediate(i,0,<un Vector3>) et intermediate(i,1,<un Vector3>) )
   // les points intermédiaires doivent être fixés par la méthode vue en cours (tangentes parallèles aux segments [point(i-1),point(i+1)]).
+
+  int size = nbPoint();
+ for (int i = 1; i < size-1; i++) {
+     parallele = Vector3(point(i-1),point(i+1));
+     intermediate(i-1,1,point(i)-(parallele/2));
+     intermediate(i,0,point(i)+(parallele/2));
+ }
 
 }
 
