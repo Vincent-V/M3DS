@@ -18,7 +18,7 @@ void main() {
   float diffuseIntensity;
   float specularIntensity=0;
   vec4 positionEye;
-  vec3 L,V,N;
+  vec3 L,V,N,R;
 
   positionEye=modelviewMatrix*vec4(position,1);
 
@@ -30,10 +30,14 @@ void main() {
   V=normalize(V);
   N=normalize(N);
 
+  R = 2* (dot(L,N))* N - L;
+  R = normalize(R);
 
   diffuseIntensity=max(dot(N,L),0.0);
+  specularIntensity = pow(dot(V,R),50);
 
-  fColor=vec4(diffuseIntensity*materialDiffuse+materialAmbient.xyz,materialAmbient.a);
+
+  fColor=vec4(diffuseIntensity*materialDiffuse+materialAmbient.xyz+materialSpecular*specularIntensity,materialAmbient.a);
 
   gl_Position=mvp*vec4(position,1);
 }
