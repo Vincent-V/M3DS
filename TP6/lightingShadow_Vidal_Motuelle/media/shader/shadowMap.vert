@@ -15,4 +15,11 @@ void main() {
   fTexCoord=vec4(0,0,0,1);
 
   gl_Position=mvp*vec4(position,1);
+
+  //fTexCoord=gl_Position;
+  //fTexCoord=vec4(position,1);
+  //fTexCoord=positionEye;
+
+  fTexCoord=textureEyeMatrix*positionEye;
+
 }
