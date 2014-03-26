@@ -7,8 +7,16 @@ in vec4 fTexCoord;
 out vec4 fragColor;
 
 void main() {
+
   vec4 texCoord=fTexCoord;
   texCoord.xy/=texCoord.w;
 
-  fragColor=texture(image1,texCoord.st);
+  texCoord.x = (texCoord.x+1)/2;
+  texCoord.y = (texCoord.y+1)/2;
+
+  if(texCoord.z>=0)
+    fragColor=texture(image1,texCoord.st);
+  else {
+    fragColor=vec4(0,0,0,0);
+  }
 }

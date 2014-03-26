@@ -170,6 +170,11 @@ void GLApplication::update() {
 
   _textureEyeMatrix.setIdentity();
 
+  //_textureEyeMatrix.translate(4,0,0);
+  //_textureEyeMatrix.rotate(_moveAngle,0,0,1);
+
+  //_textureEyeMatrix*=(_lightMatrix.inverse()*_camera.worldLocal());
+  _textureEyeMatrix=_textureEyeMatrix.fromFrustum(-0.5,0.5,-0.5,0.5,0.9,100)*(_lightMatrix.inverse()*_camera.worldLocal());
 
   if (mouseRight()) {
     Vector3 vertical=_lightMatrix.inverse().transformDirection(Vector3(0,1,0));
