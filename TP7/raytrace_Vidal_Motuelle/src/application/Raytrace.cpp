@@ -28,35 +28,49 @@ Calcul de la couleur pour un rayon donné : la fonction sera récursive lors de 
 */
 Vector3 Raytrace::computeRayColor(const Ray &ray, int level, double contribution) {
 
-  /**
+    /**
   * Remarques :
   - inter->material().reflexionCoefficient() donnera le coefficient de contribution à la réflexion (i.e. 1=réflexion totale, 0=réflexion nulle)
   - inter->computeReflectRay() : permet de calculer le rayon réfléchi
   */
 
 
-  Vector3 color=Vector3(0,0,0);
+    Vector3 color=Vector3(0,0,0);
 
-  if (level>0 && contribution>0.001) {
+    if (level>0 && contribution>0.001) {
 
-    // Intersection de la scène avec le rayon (donne uniquement l'intersection la "plus proche").
-    Intersection *inter=_scene->intersection(ray,0.1); // 0.1 pour prendre une intersection qui se trouve un peu devant le "point de départ" (origine) du rayon
+        // Intersection de la scène avec le rayon (donne uniquement l'intersection la "plus proche").
+        Intersection *inter=_scene->intersection(ray,0.1); // 0.1 pour prendre une intersection qui se trouve un peu devant le "point de départ" (origine) du rayon
 
-    if (inter!=NULL) { // existe-t-il une intersection avec la scène ?
-      color=computeLocalColor(*inter); // calcul de la couleur par Phong
+        if (inter!=NULL) { // existe-t-il une intersection avec la scène ?
+            color=computeLocalColor(*inter); // calcul de la couleur par Phong
+
+            // on récupère le coefficient
+            double coeffReflexion = inter->material().reflectionCoefficient();
+            double coeffRefract = inter->material().refractionCoefficient();
+
+            if (coeffReflexion > 0.0 && level > 0 && contribution > 0.001) {
+                Ray reflectedRay = inter->computeReflectRay();
+                Ray refractRay = inter->computeRefractRay();
+
+                Vector3 reflectedRayColor = computeRayColor(reflectedRay,level-1,contribution*coeffReflexion);
+                Vector3 refractRayColor = computeRayColor(refractRay,level-1,contribution*coeffReflexion);
+
+                color = (1.0-coeffReflexion)*color + coeffReflexion*reflectedRayColor;
+                color = (1.0-coeffRefract)*color + coeffRefract*refractRayColor;
+
+            }
 
 
 
+            // libération mémoire de inter
+            delete inter;
+        }
 
-
-      // libération mémoire de inter
-      delete inter;
     }
 
-  }
 
-
-  return color;
+    return color;
 }
 
 
@@ -66,7 +80,7 @@ Vector3 Raytrace::computeRayColor(const Ray &ray, int level, double contribution
   - les données de la scène (sources lumineuses) sont accessibles par scene()->...
 */
 Vector3 Raytrace::computeLocalColor(const Intersection &intersection) {
-  /**
+    /**
   * P est le point d'intersection (Vector3)
   * L est le vecteur d'éclairement (Vector3)
   * N est la normale au point d'intersection (Vector3)
@@ -79,21 +93,59 @@ Vector3 Raytrace::computeLocalColor(const Intersection &intersection) {
   * Remarque : il faut faire la somme des couleurs obtenues pour chacune des sources (risque de saturation si plusieurs sources lumineuses).
   */
 
-  Vector3 P;
-  Vector3 L;
-  Vector3 N;
-  Vector3 V;
-  N=intersection.normal();
-  P=intersection.point();
-  // V= ?, L=?
-  Material m=intersection.node()->primitive()->material();
+    Vector3 P;
+    Vector3 L;
+    Vector3 N;
+    Vector3 V;
+    N = intersection.normal();
+    N.normalize();
+    P = intersection.point();
 
 
-  Vector3 result=Vector3(1,1,1); // =m.ambient();
+    V = -intersection.incident().direction();
+    V.normalize();
+
+    Material m=intersection.node()->primitive()->material();
+
+    Vector3 result; // = m.ambient();
+    m.ambient();
+
+    int nbLight = _scene->nbLight();
 
 
 
-  return result;
+    for (int i = 0; i< nbLight; i++) {
+        L = _scene->lightPosition(i) - P;
+        L.normalize();
+
+        if (V.dot(N) < 0) N = -N;
+
+        float diffus = max(N.dot(L),0.0);
+
+
+        Ray shadow(P,_scene->lightPosition(i) - P);
+        Intersection* inter = _scene->intersection(shadow,0.1);
+
+        double S = m.shininess();
+        Vector3 R = 2*N.dot(L)*N - L;
+        R.normalize();
+
+        double coef = max(V.dot(R),0.0);
+        double spec = pow(coef,S);
+        spec = spec;
+
+        if (inter!=NULL) {
+            double lambda = inter->lambda();
+            if (lambda > 1) {
+                result += diffus*m.diffuse() + spec*m.specular();
+            }
+            delete inter;
+        } else {
+            result += diffus*m.diffuse() + spec*m.specular();
+        }
+    }
+
+    return result;
 }
 
 
@@ -105,8 +157,8 @@ Vector3 Raytrace::computeLocalColor(const Intersection &intersection) {
 /** *************************************************************** **/
 /** *************************************************************** **/
 void Raytrace::run() {
-  _stopRequest=false;
-  computeImage();
+    _stopRequest=false;
+    computeImage();
 }
 
 
@@ -115,36 +167,36 @@ Boucle principale du lancer de rayon
 
 */
 void Raytrace::computeImage() {
-  _camera=_scene->camera();
-  _camera.viewport(0,0,_width,_height);
-  Vector3 eye(0.0,0.0,0.0);
-  Vector3 pixel_eye; // pixel dans le repère observateur
-  _image->fill(Qt::black);
+    _camera=_scene->camera();
+    _camera.viewport(0,0,_width,_height);
+    Vector3 eye(0.0,0.0,0.0);
+    Vector3 pixel_eye; // pixel dans le repère observateur
+    _image->fill(Qt::black);
 
-  clock_t clockStart=clock();
+    clock_t clockStart=clock();
 
-  Matrix4 csg2Camera=_scene->localWorld();
-  csg2Camera.mul(_camera.worldCamera());
+    Matrix4 csg2Camera=_scene->localWorld();
+    csg2Camera.mul(_camera.worldCamera());
 
 
-  for(unsigned int y=0; y<_height; ++y) {
-    for(unsigned int x=0; x<_width; ++x) {
-      if (_stopRequest) goto fin;
-      pixel_eye=_camera.windowToCamera(x,y); // exprime le rayon dans le repère de l'observateur.
+    for(unsigned int y=0; y<_height; ++y) {
+        for(unsigned int x=0; x<_width; ++x) {
+            if (_stopRequest) goto fin;
+            pixel_eye=_camera.windowToCamera(x,y); // exprime le rayon dans le repère de l'observateur.
 
-      Ray rayon=Ray(eye,pixel_eye);  // rayon primaire
-      rayon.transform(csg2Camera);
-      Vector3 c=computeRayColor(rayon,4,1.0); // calcule la couleur du pixel; 10=profondeur max de récursion, 1.0=contribution; tous les calculs sont entendus dans le repère G
-      // mise à jour de la couleur du pixel dans l'image résultante
-      c.clamp(0,1);
-      QColor color=QColor::fromRgbF(c.r(),c.g(),c.b());
+            Ray rayon=Ray(eye,pixel_eye);  // rayon primaire
+            rayon.transform(csg2Camera);
+            Vector3 c=computeRayColor(rayon,4,1.0); // calcule la couleur du pixel; 10=profondeur max de récursion, 1.0=contribution; tous les calculs sont entendus dans le repère G
+            // mise à jour de la couleur du pixel dans l'image résultante
+            c.clamp(0,1);
+            QColor color=QColor::fromRgbF(c.r(),c.g(),c.b());
 
-      _image->setPixel(x,y,color.rgba()); // affecte à l'image la couleur calculée
+            _image->setPixel(x,y,color.rgba()); // affecte à l'image la couleur calculée
+        }
     }
-  }
 fin:
-  clock_t clockElapsed=clock()-clockStart;
-  cout << "Raytracing finished in " << double(clockElapsed)/CLOCKS_PER_SEC << " seconds" << endl;
+    clock_t clockElapsed=clock()-clockStart;
+    cout << "Raytracing finished in " << double(clockElapsed)/CLOCKS_PER_SEC << " seconds" << endl;
 }
 
 
@@ -171,13 +223,13 @@ Raytrace::~Raytrace() {
 
 
 void Raytrace::close() {
-  if (isRunning()) {
-    _stopRequest=true;
-    while (isRunning()) {
-      cout << "Im waiting" << endl;
-      usleep(100);
+    if (isRunning()) {
+        _stopRequest=true;
+        while (isRunning()) {
+            cout << "Im waiting" << endl;
+            usleep(100);
+        }
     }
-  }
 }
 
 
