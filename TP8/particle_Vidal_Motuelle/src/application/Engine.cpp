@@ -82,10 +82,10 @@ void Engine::collisionPlane() {
 
         if( point.dot(plane->normal()) < 0 ) {
             /*p->velocity(Vector3(0,0,0));
-            p->position(plane->project(p->position())); Ex1Q3*/
+            p->position(plane->project(p->position())); Ex2Q3*/
 
             /*posCorrection = plane->project(p->position()) - p->position();
-            velCorrection = Vector3(0,0,0) - p->velocity(); Ex1Q4*/
+            velCorrection = Vector3(0,0,0) - p->velocity(); Ex2Q4*/
 
             double e = 0.5;
 
