@@ -1,8 +1,10 @@
 Motuelle Romain
 Vidal Vincent
 
-Doit contenir :
-- ce que vous avez fait.
-- ce que vous n'avez pas fait (et pourquoi).
-- difficultés rencontrées.
-- commentaires éventuels sur le TP (points à éclaircir, longueur du sujet, etc). 
+Avancement :
+
+Nous avons réalisé l'ensemble des questions.
+Cependant il semblerait que l'avant dernière question ne fonctionne pas parfaitement.
+Car les collisions ne fonctionnent pas à la perfection. Il arrive que les blocs se passent à travers.
+
+Sinon avant cela tout s'est bien passé.
