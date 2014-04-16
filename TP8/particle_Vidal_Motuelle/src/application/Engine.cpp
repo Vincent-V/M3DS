@@ -80,14 +80,14 @@ void Engine::collisionPlane() {
 
         Vector3 point = ((p->position()-Vector3(0,p->radius(),0))-plane->point());
 
-        if( point.dot(plane->normal()) < 0 ) {
+        if( point.dot(plane->normal()) <= 0 ) {
             /*p->velocity(Vector3(0,0,0));
             p->position(plane->project(p->position())); Ex2Q3*/
 
             /*posCorrection = plane->project(p->position()) - p->position();
-            velCorrection = Vector3(0,0,0) - p->velocity(); Ex2Q4*/
+            velCorrection = Vector3(0,0,0) - p->velocity();*/
 
-            double e = 0.5;
+            double e = 0.1;
 
             Vector3 xold = p->position();
             Vector3 vold = p->velocity();
@@ -97,12 +97,14 @@ void Engine::collisionPlane() {
 
             posCorrection = (1+e) * ( h - (xold - Vector3(0,p->radius(),0)));
 
-            velCorrection = - ((1-e)*(vold.dot(n))) * n ;
+            velCorrection = - ((1+e)*(vold.dot(n))) * n ;
         }
 
         // appliquer les corrections calculées :
         p->addPositionCorrec(posCorrection);
         p->addVelocityCorrec(velCorrection);
+        //p->positionCorrection();
+        //p->velocityCorrection();
       }
 
     }
@@ -142,6 +144,18 @@ void Engine::interCollision() {
           Vector3 velCorrectionP2(0,0,0); // correction en vitesse de P2
 
           /* A COMPLETER */
+           if(p1->position().distance(p2->position()) < p1->radius()+p2->radius()){
+               double e = 0.1;
+               double dist = (p1->position()-p2->position()).length() -p1->radius() - p2->radius();
+               Vector3 n = p2->position()-p1->position();
+               double k = computeImpulse(p1,p2,n,1+e);
+
+               posCorrectionP1 = (1+e) * (p2->mass()/(p1->mass()+p2->mass()))*dist*n;
+               velCorrectionP1 = -(k/p1->mass())*n;
+
+               posCorrectionP2 = -(1+e) * (p1->mass()/(p1->mass()+p2->mass()))*dist*n;
+               velCorrectionP2 = (k/p2->mass())*n;
+           }
 
 
           // appliquer la correction éventuelle :

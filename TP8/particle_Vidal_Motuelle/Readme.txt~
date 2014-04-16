@@ -1,8 +1,10 @@
-Nom1 Prénom1
-Nom2 Prénom2
+Vidal Vincent
+Motuelle Romain
 
-Doit contenir :
-- ce que vous avez fait.
-- ce que vous n'avez pas fait (et pourquoi).
-- difficultés rencontrées.
-- commentaires éventuels sur le TP (points à éclaircir, longueur du sujet, etc). 
+Avancement :
+
+Le TP a été réalisé entièrement.
+
+Le seul soucis apparait à la toute dernière question, lors de l'ajout de 4 nouveaux plans pour former une boite.
+Le problème est que lorsque les sphères collisionnent ces nouveaux plans : elles rebondissent vers le haut.
+Nous savons que le problème vient de la fonction Engine::collisionPlane qui ne prend pas en compte correctement la normale du plan.

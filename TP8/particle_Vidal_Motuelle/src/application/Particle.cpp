@@ -34,7 +34,9 @@ double randUnit() {
 **/
 void Particle::initRandom() {
 
-  this->position(Vector3(randDouble(-1,1),randDouble(-1,1),0));
+  int y=5;
+
+  this->position(Vector3(randDouble(-1,1),y,0));
   this->velocity(2.0*Vector3(randDouble(-1,1),randDouble(0,5),randDouble(-1,1)));
   _timeOfLife=randDouble(4,10); // en secondes
 
