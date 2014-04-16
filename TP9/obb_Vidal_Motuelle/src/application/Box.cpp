@@ -49,6 +49,16 @@ void Box::project(const Vector3 &axe,double *mini,double *maxi) const {
   double kmin=0.0,kmax=0.0;
   // A compléter : l'intervalle [kmin,kmax] doit correspondre à la projection de la boite sur l'axe
 
+  kmin = this->vertex(0).dot(axe);
+  kmax = this->vertex(0).dot(axe);
+
+  for (int i = 1; i<4;i++){
+      double proj_i = this->vertex(i).dot(axe);
+
+      if (kmin>proj_i) kmin = proj_i;
+
+      if (kmax<proj_i) kmax = proj_i;
+  }
 
   *mini=kmin;
   *maxi=kmax;
@@ -67,7 +77,7 @@ void Box::distance(Box *b1, Box *b2, const Vector3 &axe, double *distance, doubl
   b1->project(axe,&d1,&f1);
   b2->project(axe,&d2,&f2);
 
-  drawDebugProject(b1,b2,axe,d1,f1,d2,f2);
+  //drawDebugProject(b1,b2,axe,d1,f1,d2,f2);
 
 // A completer
   // d1,f1 : intervalle de projection pour la boite b1
@@ -75,6 +85,25 @@ void Box::distance(Box *b1, Box *b2, const Vector3 &axe, double *distance, doubl
   // quelle est la distance de recouvrement ? (*distance = ??)
   // affecter correctement *direction (-1 ou 1 ?)
 
+  if (d2 < f1 && d1 < f2){
+     *distance=min(d2-f1,d1-f2);
+  }
+  else {
+      if (d1 < d2)
+          *distance=abs(d2-f1);
+      else
+          *distance=abs(f2-d1);
+  }
+
+
+
+  if ( ((f2-d2)/2 + d2) < ((f1-d1/2)+d1) ){
+      //Si b2 est à gauche de b1
+      *direction = -1;
+  }
+  else{
+      *direction = 1;
+  }
 
 }
 
@@ -114,9 +143,27 @@ bool Box::detectCollision(Box *b1,Box *b2,CollisionInfo *collision) {
   //   b2 par rapport à b1 (i.e. multiplier axis[i] par le signe (-1 ou 1) retourné par la méthode distance(b1,b2,...,)).
   // - assurez vous d'avoir affecté correctement detect à la fin (==true il y a collision, == false pas de collision).
 
-  distance(b1,b2,axis[0],&dist,&direction);
+  dist_min = 999999999999999;
+
+    //  cout << "[][][][][][][][][][][][][][][][][]" << endl;
+    for (int var = 0; var < 4; var++) {
+      distance(b1,b2,axis[var],&dist,&direction);
+    //     cout << "========================================" << endl;
+      if (abs(dist) < abs(dist_min)) {
+          dist_min = dist;
+          axe_min = axis[var]*direction;
+      }
+    }
+
+    if (dist_min < 0)  {
+      // UtilGL::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Color(0.2,0.2,1));
+     //  cout << dist_min << endl;
+       detect = true;
+   }
+
+  /*distance(b1,b2,axis[0],&dist,&direction);
   if (dist<0) p3d::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Vector3(0.2,0.2,1));
-  detect=false; // force une non détection (à enlever lorsque la détection est implémentée...).
+  detect=false; // force une non détection (à enlever lorsque la détection est implémentée...).*/
 
   // affecter les informations nécessaires à la réponse
   if (detect) {
