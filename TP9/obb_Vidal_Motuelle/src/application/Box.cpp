@@ -99,10 +99,10 @@ void Box::distance(Box *b1, Box *b2, const Vector3 &axe, double *distance, doubl
 
   if ( ((f2-d2)/2 + d2) < ((f1-d1/2)+d1) ){
       //Si b2 est à gauche de b1
-      *direction = -1;
+      *direction = -0.1;
   }
   else{
-      *direction = 1;
+      *direction = 0.1;
   }
 
 }
@@ -143,7 +143,7 @@ bool Box::detectCollision(Box *b1,Box *b2,CollisionInfo *collision) {
   //   b2 par rapport à b1 (i.e. multiplier axis[i] par le signe (-1 ou 1) retourné par la méthode distance(b1,b2,...,)).
   // - assurez vous d'avoir affecté correctement detect à la fin (==true il y a collision, == false pas de collision).
 
-  dist_min = 999999999999999;
+  dist_min = 10;
 
     //  cout << "[][][][][][][][][][][][][][][][][]" << endl;
     for (int var = 0; var < 4; var++) {
@@ -155,15 +155,16 @@ bool Box::detectCollision(Box *b1,Box *b2,CollisionInfo *collision) {
       }
     }
 
+    detect=false;
     if (dist_min < 0)  {
       // UtilGL::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Color(0.2,0.2,1));
      //  cout << dist_min << endl;
        detect = true;
    }
 
-  /*distance(b1,b2,axis[0],&dist,&direction);
-  if (dist<0) p3d::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Vector3(0.2,0.2,1));
-  detect=false; // force une non détection (à enlever lorsque la détection est implémentée...).*/
+  //distance(b1,b2,axis[0],&dist,&direction);
+  //if (dist<0) p3d::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Vector3(0.2,0.2,1));
+  //detect=false; // force une non détection (à enlever lorsque la détection est implémentée...).
 
   // affecter les informations nécessaires à la réponse
   if (detect) {
