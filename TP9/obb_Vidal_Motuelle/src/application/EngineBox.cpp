@@ -27,7 +27,17 @@ void EngineBox::computeForce() {
     Box *b=_boxList->at(i);
 
 // A compléter
+    double coeff = 0.5;
+    b->addForce(Vector3 (0,b->mass()*-9.8,0));
+    b->addForce(-1*b->velocity()*coeff);
+    b->addMoment((-1*b->omega())*coeff);
 
+  }
+  if(_cursorActive) {
+      Box *b=_boxList->selected();
+      Vector3 pointClick = _cursor-b->attachWorld();
+      b->addForce(pointClick);
+      b->addMoment(pointClick.cross(b->position()-b->attachWorld()));
   }
 
 
@@ -106,7 +116,8 @@ void EngineBox::euler(double dt) {
     b->position(b->position()+dt*b->velocity());
     b->velocity(b->velocity()+dt*b->force()/b->mass());
     // à compléter
-
+    b->theta(b->theta()+b->omega().z()*dt);
+    b->omega(b->omega()+(b->moment()/b->inertia())*dt);
 
     // à laisser en fin :
     b->resetForce();
