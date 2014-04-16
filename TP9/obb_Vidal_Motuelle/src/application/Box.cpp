@@ -145,10 +145,8 @@ bool Box::detectCollision(Box *b1,Box *b2,CollisionInfo *collision) {
 
   dist_min = 10;
 
-    //  cout << "[][][][][][][][][][][][][][][][][]" << endl;
     for (int var = 0; var < 4; var++) {
       distance(b1,b2,axis[var],&dist,&direction);
-    //     cout << "========================================" << endl;
       if (abs(dist) < abs(dist_min)) {
           dist_min = dist;
           axe_min = axis[var]*direction;
@@ -157,8 +155,6 @@ bool Box::detectCollision(Box *b1,Box *b2,CollisionInfo *collision) {
 
     detect=false;
     if (dist_min < 0)  {
-      // UtilGL::addDebug(b1->position(),b1->position()-direction*dist*axis[0],"",Color(0.2,0.2,1));
-     //  cout << dist_min << endl;
        detect = true;
    }
 
