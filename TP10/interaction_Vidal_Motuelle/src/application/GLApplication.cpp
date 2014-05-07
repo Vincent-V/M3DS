@@ -189,7 +189,7 @@ void GLApplication::selectObject() {
   }
   if (mouseRightPressed()) {
 
-    _sceneIntersection.intersect({&_triangle},_pickingRay);
+    _sceneIntersection.intersect({&_triangle,&_triceratops,&_cow},_pickingRay);
 
     if (_sceneIntersection.size()>0) {
 
@@ -213,6 +213,7 @@ void GLApplication::moveSelectedObject() {
 
       double dx=double(deltaMouseX())/100.0,dy=double(deltaMouseY())/100.0; // /20.0 to attenuate mouse motion
 
+      mesh->translate(dx,dy,0,Coordinate_Local);
       if (_controlMouse==Manipulation_Translation) {
 
       }
@@ -226,20 +227,20 @@ void GLApplication::moveSelectedObject() {
 
 void GLApplication::updateCamera() {
   if (left()) {
-
+    _camera.translate(Vector3(-1,0,0), Coordinate_Local);
   }
   if (right()) {
-
+    _camera.translate(Vector3(1,0,0), Coordinate_Local);
   }
   if (forward()) {
-
+    _camera.translate(Vector3(0,0,-1), Coordinate_Local);
   }
   if (backward()) {
-
+    _camera.translate(Vector3(0,0,1), Coordinate_Local);
   }
   if (mouseLeft()) {
-    // rotate camera : deltaMouseX(), deltaMouseY() give the mouse motion
-
+      _camera.rotate(deltaMouseX(),Vector3(0,-1,0),Coordinate_Local);
+      _camera.rotate(deltaMouseY(),Vector3(1,0,0),Coordinate_Local);
   }
 }
 

@@ -84,30 +84,39 @@ void Camera2::applyGL() {
 }
 
 p3d::Vector3 Camera2::windowToNDC(int x,int y) {
-  Vector3 res(0,0,0);
 
-  cout << "window to NDC : " << res << endl;
+    double normX = ((double)x/(_viewWidth/2))-1;
+    double normY = ((double)y/(_viewHeight/2))-1;
+    double normZ = -1;
 
-  return res;
+    Vector3 res(normX,normY,normZ);
+
+    cout << "window to NDC : " << res << endl;
+
+    return res;
 }
 
 p3d::Vector3 Camera2::windowToCamera(int x,int y) {
-  Vector3 res(0,0,0);
-
-  return res;
+    Vector3 res(0,0,0);
+    res = windowToNDC(x,y);
+    res = _projection.inverse().transformPoint(res);
+    return res;
 }
 
 p3d::Vector3 Camera2::windowToWorld(int x,int y) {
-  Vector3 res(0,0,0);
-
-  return res;
+    Vector3 res(0,0,0);
+    res = windowToCamera(x,y);
+    res = worldCamera().transformPoint(res);
+    return res;
 }
 
 
 p3d::Line Camera2::pickingRay(int x, int y) {
   Line res;
   // res.point(a), res.direction(u) to set the line (a and u are Vector3)
-
+  res.point(worldCamera().transformPoint(Vector3(0,0,0)));
+  Vector3 mWorld = windowToWorld(x,y);
+  res.direction(mWorld-res.point());
   return res;
 }
 
